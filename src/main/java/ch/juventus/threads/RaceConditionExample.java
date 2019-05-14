@@ -28,16 +28,18 @@ public class RaceConditionExample  {
         }
 
         private void makeWithdrawal(int amount) {
-            if (account.getBalance() >= amount) {
-                System.out.printf("%s is going to withdraw\n", Thread.currentThread().getName());
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
+            synchronized (account) {
+                if (account.getBalance() >= amount) {
+                    System.out.printf("%s is going to withdraw\n", Thread.currentThread().getName());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                    }
+                    account.withdraw(amount);
+                    System.out.printf("%s completes the withdraw\n", Thread.currentThread().getName());
+                } else {
+                    System.out.printf("Not enough in account %s to withdraw %d\n", Thread.currentThread().getName(), account.getBalance());
                 }
-                account.withdraw(amount);
-                System.out.printf("%s completes the withdraw\n", Thread.currentThread().getName());
-            } else {
-                System.out.printf("Not enough in account %s to withdraw %d\n", Thread.currentThread().getName(), account.getBalance());
             }
         }
 
